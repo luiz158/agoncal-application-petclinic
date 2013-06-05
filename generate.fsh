@@ -10,7 +10,7 @@ set ACCEPT_DEFAULTS true;
  new-project --named agoncal-application-petclinic --topLevelPackage org.agoncal.application.petclinic --type war ;
 
 @/* Customize Maven */;
-maven set-groupid org.agoncal.application
+maven set-groupid org.agoncal.application ;
 
 @/* Setup JPA */;
 persistence setup --provider ECLIPSELINK --container GLASSFISH_3 ;
