@@ -13,7 +13,10 @@ set ACCEPT_DEFAULTS true;
 maven set-groupid org.agoncal.application ;
 
 @/* Setup JPA */;
-persistence setup --provider ECLIPSELINK --container GLASSFISH_3 ;
+persistence setup --provider ECLIPSELINK --container GLASSFISH_3 --named petclinicPU ;
+
+@/* Setup Bean Validation */;
+validation setup --provider HIBERNATE_VALIDATOR ;
 
 @/* Create some JPA @Entities on which to base our application */;
 @/* PetType */;
