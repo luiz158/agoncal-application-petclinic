@@ -1,13 +1,18 @@
 @/* Generates the draft of a Petclinic application */;
 
-@/* Clear the screen */;
 clear ;
-
-@/* This means less typing. If a script is automated, or is not meant to be interactive, use this command */;
 set ACCEPT_DEFAULTS true ;
 
-@/* Create a new project in the current directory */;
+@/* ========================== */;
+@/* == Creating the project == */;
+@/* ========================== */;
+
 new-project --named agoncal-application-petclinic --topLevelPackage org.agoncal.application.petclinic --type war ;
+
+
+@/* =========================== */;
+@/* == Setting up the project == */;
+@/* =========================== */;
 
 @/* Setup JPA */;
 persistence setup --provider ECLIPSELINK --container GLASSFISH_3 --named petclinicPU ;
@@ -15,7 +20,20 @@ persistence setup --provider ECLIPSELINK --container GLASSFISH_3 --named petclin
 @/* Setup Bean Validation */;
 validation setup --provider HIBERNATE_VALIDATOR ;
 
-@/* Create some JPA @Entities on which to base our application */;
+@/* Setup CDI */;
+beans setup ;
+
+@/* Setup JAX-RS */;
+rest setup;
+
+@/* Turn our Java project into a Web project with JSF, CDI, EJB, and JPA */;
+scaffold setup --scaffoldType faces ;
+
+
+@/* =========================== */;
+@/* == Creating JPA Entities == */;
+@/* =========================== */;
+
 @/* PetType */;
 entity --named PetType ;
 field string --named name ;
@@ -73,31 +91,37 @@ java new-class --named Vets --package ~.model ;
 java new-field  'private List<Vet> vets' ;
 java new-method '@XmlElement public List<Vet> getVetList() {if (vets == null) {vets = new ArrayList<Vet>();}return vets;}' ;
 
-@/* Building */;
+
+@/* =========================== */;
+@/* == Building JPA Entities == */;
+@/* =========================== */;
+
 echo You need to manually import the classes to Vets. Go to your IDE and fix it before pressing enter ;
 wait ;
 wait ;
 build --notest ;
 
 
-@/* Turn our Java project into a Web project with JSF, CDI, EJB, and JPA */;
-scaffold setup --scaffoldType faces;
+@/* ================= */;
+@/* == Scaffolding == */;
+@/* ================= */;
 
-@/* Enable CDI if not already done */;
-beans setup;
+@/* Generate the UI for all the @Entities */;
+scaffold from-entity ~.model.* ;
 
-@/* Generate the UI for all of our @Entities at once */;
-scaffold from-entity ~.domain.* --scaffoldType faces --overwrite;
-cd ~~;
+@/* Generate CRUD endpoints for all the @Entities */;
+rest endpoint-from-entity ~.model.* ;
 
-@/* Setup JAX-RS, and create CRUD endpoints */;
-rest setup;
-rest endpoint-from-entity ~.domain.*;
+@/* ========================== */;
+@/* == Building the project == */;
+@/* ========================== */;
 
-@/* Build the project and disable ACCEPT_DEFAULTS */;
-build;
+build --notest ;
+
+@/* =================================== */;
+@/* == Returning to the project root == */;
+@/* =================================== */;
+
 set ACCEPT_DEFAULTS false;
-
-@/* Return to the project root directory and leave it in your hands */;
 cd ~~;
 
