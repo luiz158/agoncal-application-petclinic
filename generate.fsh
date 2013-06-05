@@ -20,45 +20,61 @@ validation setup --provider HIBERNATE_VALIDATOR ;
 
 @/* Create some JPA @Entities on which to base our application */;
 @/* PetType */;
-entity --named PetType --package ~.model;
-field string --named name;
+entity --named PetType ;
+field string --named name ;
 
 @/* Specialty */;
-entity --named Specialty --package ~.model;
-field string --named name;
+entity --named Specialty ;
+field string --named name ;
 
 @/* Vet */;
-entity --named Vet --package ~.model;
-field string --named firstName;
-field string --named lastName;
- field manyToMany --named specialties --fieldType ~.model.Specialty.java
+entity --named Vet ;
+field string --named firstName ;
+constraint NotNull --onProperty firstName ;
+field string --named lastName ;
+constraint NotNull --onProperty lastName ;
+field manyToMany --named specialties --fieldType ~.model.Specialty.java ;
 
 @/* Pet */;
-entity --named Pet --package ~.model;
-field string --named name;
-field temporal --type DATE --named birthDate;
-field manyToOne --named type --fieldType ~.model.PetType.java
+entity --named Pet ;
+field string --named name ;
+field temporal --type DATE --named birthDate ;
+constraint Past --onProperty birthDate ;
+field manyToOne --named type --fieldType ~.model.PetType.java ;
 
 @/* Owner */;
-entity --named Owner --package ~.model;
-field string --named firstName;
-field string --named lastName;
-field string --named address;
-field string --named city;
-field string --named telephone;
-field oneToMany --named pets --fieldType ~.model.Pet.java
+entity --named Owner ;
+field string --named firstName ;
+constraint NotNull --onProperty firstName ;
+field string --named lastName ;
+constraint NotNull --onProperty lastName ;
+field string --named address ;
+constraint NotNull --onProperty address ;
+field string --named city ;
+constraint NotNull --onProperty city ;
+field string --named telephone ;
+constraint NotNull --onProperty telephone ;
+constraint Digits --onProperty telephone --integer 10 --fraction 0 ;
+field oneToMany --named pets --fieldType ~.model.Pet.java ;
 
 @/* Visit */;
-entity --named Visit --package ~.model;
-field temporal --type DATE --named birthDate;
-field string --named description;
-field manyToOne --named pet --fieldType ~.model.Pet.java
+entity --named Visit ;
+field temporal --type DATE --named date ;
+constraint Future --onProperty date ;
+field string --named description ;
+constraint NotNull --onProperty description ;
+field manyToOne --named pet --fieldType ~.model.Pet.java ;
+
+@/* Adding relationships to Pet */;
+cd ../Pet.java ;
+field manyToOne --named owner --fieldType ~.model.Owner.java ;
+field oneToMany --named visits --fieldType ~.model.Visit.java ;
 
 @/* Create some beans */;
 @/* Vets */;
-java new-class --named Vets --package ~.model;
-java new-field  'private List<Vet> vets'
-java new-method '@XmlElement public List<Vet> getVetList() {if (vets == null) {vets = new ArrayList<Vet>();}return vets;}'
+java new-class --named Vets --package ~.model ;
+java new-field  'private List<Vet> vets' ;
+java new-method '@XmlElement public List<Vet> getVetList() {if (vets == null) {vets = new ArrayList<Vet>();}return vets;}' ;
 
 @/* Turn our Java project into a Web project with JSF, CDI, EJB, and JPA */;
 scaffold setup --scaffoldType faces;
