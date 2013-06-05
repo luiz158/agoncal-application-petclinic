@@ -1,16 +1,13 @@
 @/* Generates the draft of a Petclinic application */;
 
 @/* Clear the screen */;
-clear;
+clear ;
 
 @/* This means less typing. If a script is automated, or is not meant to be interactive, use this command */;
-set ACCEPT_DEFAULTS true;
+set ACCEPT_DEFAULTS true ;
 
 @/* Create a new project in the current directory */;
- new-project --named agoncal-application-petclinic --topLevelPackage org.agoncal.application.petclinic --type war ;
-
-@/* Customize Maven */;
-maven set-groupid org.agoncal.application ;
+new-project --named agoncal-application-petclinic --topLevelPackage org.agoncal.application.petclinic --type war ;
 
 @/* Setup JPA */;
 persistence setup --provider ECLIPSELINK --container GLASSFISH_3 --named petclinicPU ;
@@ -75,6 +72,13 @@ field oneToMany --named visits --fieldType ~.model.Visit.java ;
 java new-class --named Vets --package ~.model ;
 java new-field  'private List<Vet> vets' ;
 java new-method '@XmlElement public List<Vet> getVetList() {if (vets == null) {vets = new ArrayList<Vet>();}return vets;}' ;
+
+@/* Building */;
+echo You need to manually import the classes to Vets. Go to your IDE and fix it before pressing enter ;
+wait ;
+wait ;
+build --notest ;
+
 
 @/* Turn our Java project into a Web project with JSF, CDI, EJB, and JPA */;
 scaffold setup --scaffoldType faces;
